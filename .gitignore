@@ -1,0 +1,12 @@
+.ipynb_checkpoints/
+.DS_Store
+.env
+__pycache__/
+.vscode/
+/env/
+/venv/
+/data/
+/logs/
+/models/
+*Identifier
+*.pyd
