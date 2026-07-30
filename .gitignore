@@ -10,3 +10,4 @@ __pycache__/
 /models/
 *Identifier
 *.pyd
+bigram_model.py
