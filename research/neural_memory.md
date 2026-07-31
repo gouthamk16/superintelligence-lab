@@ -2,7 +2,7 @@
 
 ## Research goal
 
-Come up with a neural architecture with a fundamentally better long-term memory mechanism than existing recurrent or attention-based models, enabling more efficient reasoning, longer context retention and improved scalability towards general intelligence.
+Come up with a neural architecture with a fundamentally better long-term memory mechanism than existing recurrent or attention-based models, enabling more efficient reasoning, longer context retention and improved scalability towards superintelligence.
 
 ## Core Research Questions
 
@@ -44,5 +44,53 @@ Hence memory grows as:
 - O(KV Heads)
 - O(batch size)
 
+Simply cannot store every token forever - poor design. Existing solutions (e.g., periodic KV rewriting, learned compression, bottlenecked Transformers) are too dependent on KV Cache to such an extent that the field is largely optimizing KV management rather than solving the root problem. This will lead to a point where the model will not be able to scale any further.
 
+Is this an actual problem - yes, does it affect current resoning performances to a huge extent - no, will this problem be a bottleneck for scaling to ASI - yes.
 
+### Quadratic Attention Complexity
+
+Comparing every token with each other token (kind of like a full connected graph bw all tokens) is a O(n^2) operation - expensive. As context grows:
+
+- Compute explodes.
+- Latency increases.
+- Energy consumption increases (not that i care, but a case to be made).
+- Cost per inference increases.
+
+Hence ultra-long context reasoning (ASI should not be restricted by context window limits, unlimited context?) becomes economically impractical. Long context windows demans immense GPU memory bandwidth, hence creating scaling walls for high-res inputs or ultra-long docs. Intelligence should not require comparing every memory with every other memory.
+
+Now, what about solutions like flash attention? Here's why (read it from the perspective of a person who is trying hard to prove that Transformers are not the best architecture for ASI):
+
+**FlashAttention**
+
+- Doesn't reduce O(n^2).
+- Only makes it GPU efficient.
+
+**Sparse attention**
+
+- Assumes most interactions aren't needed.
+- Can miss important long-range dependencies.
+
+**Linear attention**
+
+- Changes the attention function.
+- Often loses expressiveness or requires architectural tradeoffs.
+
+**SSMs**
+
+- Compress history into a fixed state.
+- Can struggle with recalling arbitrary past information.
+
+The solution is not to compute pairwise interactions faster, but it might be to not compute pairwise interactions at all.
+
+### Memory Bandwidth Bottleneck
+
+SK Hynix and Samsung will be pissed if I come up with a solution for this :). Modern GPUs are often limited not by arithmetic throughput, but by how fast they can move data between high-bandwidth memory (HBM) and on-chip SRAM, leading to models model systems spending an enormous amount of time moving data, not computing. Why:
+
+- attention required reading all previous K/V vectors (flash attention solves this to a great extent).
+- each layer has billions of params.
+- activations don't fit entirely in SRAM (flash attention saves the day again).
+
+Future models will have larger contexts, more parameters, more simulataneous users etc, and each one of these is only going to increase memory traffic. Eventually the bottleneck becomes bytes/second (i think we might have already hit this point).
+
+Even if future hardware becomes 10× faster computationally, intelligence won't scale proportionally if the architecture still spends much of its time waiting on memory transfers. This is a classic example of Amdahl's Law: speeding up computation helps less and less if data movement dominates execution time.
