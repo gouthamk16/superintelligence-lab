@@ -118,3 +118,36 @@ We're converging on the first major research question to work on:
 
 ## The theory of memory: What should constitute a "memory"?
 
+The goal at the end of this section is to define exactly what constitutes a "memory" and the requirements for the same to achieve AGI/Superintelligence.
+
+Ability to store and retrieve information over time. Has been a fundamental aspect of human cognition. Our brain processes sensory inputs into short term and long term memories, short tem being memories that are unrehearsed and unimportant, and long term being memories that are rehearsed and important (even though some information will be lost over time as memory importance degrades).
+
+These memories are again divided into categories like semantic memories (words, concepts, objects etc), episodic memories (experiences, events, etc) and procedural memories (skills, habits, etc). Procedural memories are further divided into implicit (unconscious, automatic) and explicit (conscious, effortful). There are also other concepts like memory consolidation, where our brain stabilizes memory traces after their initial formation, primarily during restful states like sleep. This phase involves the brain reactivating and reorganizing memories, weaving them into existing knowledge networks.
+
+### Memory inspired neural architectures
+
+Going to pick stuff directly from [3] in [references.md](references.md) for this section. Going to skip RNNs, LSTMs and Transformers. Our focus will be mainly on other memory-augmented neural architectures (MANNs).
+
+#### Hopfield Networks
+
+Hopfield Networks were the first instance of associative neural networks: RNN architectures which are capable of producing an emergent associative memory[5]. Single layer of interconnected neurons. Information is stored in the weights of the network (represented as the strength of connections bw neurons).
+
+<figure align="center">
+  <img src="assets/hopfield.png" alt="Hopfield Network" height="275" width="300">
+  <figcaption align="center">Figure 1: Hopfield Network with four units/neurons.</figcaption>
+</figure>
+
+Weight between two neurons *W* can be described as the extent to which the output of one neuron will contribute to the activation of the other and vice versa. This is built from the correlations bw all pairs of data vectors[3]. Expressed using the equation:
+
+$$
+W_{ij} = \sum_{s=0}^{M-1} x_i^s \cdot x_j^s \quad \text{where } i \neq j \text{ and } W_{ij} = 0 \text{ where } i = j \tag{1}
+$$
+
+Each neuron in the network has three qualities:
+
+1. Connections: Each neuron in the network is conencted to all other neurons, and each connection has a unique strength. These connection strengths are what is stored as the weight matrix.
+2. State: Each neuron has a bipolar state (-1 or 1). Output of the neuron, computed using neuron's activation and a threshold function.
+3. Activation: The input to the neuron, computed using the connections and the state of the neuron. Single scalar value.
+
+Correlations are learned using Hebbian learning rule, where we strengthen correlated synapses and weaken negatively correlated ones. Computationally more efficient compareed to backprop. Recall is an iterative process where the network updates its state until it stabilizes:
+
