@@ -132,15 +132,16 @@ Going to pick stuff directly from [3] in [references.md](references.md) for this
 
 Hopfield Networks were the first instance of associative neural networks: RNN architectures which are capable of producing an emergent associative memory[5]. Single layer of interconnected neurons. Information is stored in the weights of the network (represented as the strength of connections bw neurons).
 
-<figure align="center">
+<p align="center">
   <img src="assets/hopfield.png" alt="Hopfield Network" height="275" width="300">
-  <figcaption align="center">Figure 1: Hopfield Network with four units/neurons.</figcaption>
-</figure>
+  <br>
+  <sub><i>Figure 1: Hopfield Network with four units/neurons.</i></sub>
+</p>
 
 Weight between two neurons *W* can be described as the extent to which the output of one neuron will contribute to the activation of the other and vice versa. This is built from the correlations bw all pairs of data vectors[3]. Expressed using the equation:
 
 $$
-W_{ij} = \sum_{s=0}^{M-1} x_i^s \cdot x_j^s \quad \text{where } i \neq j \text{ and } W_{ij} = 0 \text{ where } i = j \tag{1}
+W_{ij} = \sum_{s=0}^{M-1} x_i^s \cdot x_j^s \quad \text{where } i \neq j \text{ and } W_{ij} = 0 \text{ where } i = j
 $$
 
 Each neuron in the network has three qualities:
@@ -154,7 +155,7 @@ Connections between the neurons are symmetric, i.e., if neuron *i* is connected 
 Correlations are learned using Hebbian learning rule, where we strengthen correlated synapses and weaken negatively correlated ones. Computationally more efficient compareed to backprop. Recall is an iterative process where the network updates its state until it stabilizes:
 
 $$
-x_i(t+1) = f_h\left[\sum_{j=0}^{N-1} W_{ij} \cdot x_j(t)\right] \tag{2}
+x_i(t+1) = f_h\left[\sum_{j=0}^{N-1} W_{ij} \cdot x_j(t)\right]
 $$
 
 $f_h$ is a threshold function that maps the activation to a bipolar state ($-1$ or $+1$). Each step, a neuron (or all neurons, depending on async vs sync update) recomputes its activation from the weighted states of every other neuron and flips if needed. Repeat until the state stops changing.
@@ -162,7 +163,7 @@ $f_h$ is a threshold function that maps the activation to a bipolar state ($-1$ 
 This works because stored patterns sit as attractors in an energy landscape. The network energy is roughly:
 
 $$
-E = -\frac{1}{2}\sum_{i,j} W_{ij}\, x_i\, x_j \tag{3}
+E = -\frac{1}{2}\sum_{i,j} W_{ij}\, x_i\, x_j
 $$
 
 Every update decreases (or leaves unchanged) $E$, so the dynamics are guaranteed to converge to a local minimum. Ideal case: that minimum is a stored memory. Real case: it might also be a spurious state (mixture of memories or other local optima).
@@ -197,4 +198,3 @@ Not useful as-is:
 - Fully materializing every past pattern in $X$ - same linear growth problem as KV cache.
 
 #### Neural Turing Machines
-
