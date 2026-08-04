@@ -149,5 +149,52 @@ Each neuron in the network has three qualities:
 2. State: Each neuron has a bipolar state (-1 or 1). Output of the neuron, computed using neuron's activation and a threshold function.
 3. Activation: The input to the neuron, computed using the connections and the state of the neuron. Single scalar value.
 
+Connections between the neurons are symmetric, i.e., if neuron *i* is connected to neuron *j* with a strength of +1, neuron *j*'s connection to neuron *i* will also have a strength ot +1. We can store the weights of a network with n neurons in a square matrix of shape *nxn* (weight matrix *W*, diagonal weights are null, i.e., a neuron is not connected to itself). 
+
 Correlations are learned using Hebbian learning rule, where we strengthen correlated synapses and weaken negatively correlated ones. Computationally more efficient compareed to backprop. Recall is an iterative process where the network updates its state until it stabilizes:
+
+$$
+x_i(t+1) = f_h\left[\sum_{j=0}^{N-1} W_{ij} \cdot x_j(t)\right] \tag{2}
+$$
+
+$f_h$ is a threshold function that maps the activation to a bipolar state ($-1$ or $+1$). Each step, a neuron (or all neurons, depending on async vs sync update) recomputes its activation from the weighted states of every other neuron and flips if needed. Repeat until the state stops changing.
+
+This works because stored patterns sit as attractors in an energy landscape. The network energy is roughly:
+
+$$
+E = -\frac{1}{2}\sum_{i,j} W_{ij}\, x_i\, x_j \tag{3}
+$$
+
+Every update decreases (or leaves unchanged) $E$, so the dynamics are guaranteed to converge to a local minimum. Ideal case: that minimum is a stored memory. Real case: it might also be a spurious state (mixture of memories or other local optima).
+
+**Limitations (classical Hopfield)**
+
+- Storage capacity is tiny: roughly $0.15N$ patterns for $N$ neurons before recall errors blow up[3].
+- Crosstalk between patterns creates noise and spurious attractors.
+- Binary / bipolar states only (classical version).
+- Fully connected $N \times N$ weight matrix - memory for the memory itself scales poorly.
+- One-shot Hebbian write is nice, but capacity and interference make it a non-starter as a scalable long-term memory.
+
+So classical Hopfield might have given us the right *idea* of memory (distributed, associative, attractor-based, content-addressable) and the wrong *scale*.
+
+**Modern Hopfield Networks**
+
+Ramsauer et al.[4] revisit this with continuous states and a sharper energy (log-sum-exp over stored patterns). Capacity jumps from linear in $N$ to exponential (under pattern separation assumptions). I don't think its worth exploring though, runs into all the same issues that a attention based model would run into.
+
+**What to take from Hopfield for our research**
+
+Useful:
+
+- Memory as attractors / energy minima, not a flat token list.
+- Content-addressable retrieval (nearest memory) instead of O(n) scan over history.
+- Write via local / one-shot rules (Hebbian) rather than full backprop over the archive.
+- Pattern completion under noise - closer to how brains actually retrieve.
+
+Not useful as-is:
+
+- Classical capacity ceiling.
+- Equating "modern Hopfield = attention" without solving persistence - that just renames the transformer bottleneck.
+- Fully materializing every past pattern in $X$ - same linear growth problem as KV cache.
+
+#### Neural Turing Machines
 
