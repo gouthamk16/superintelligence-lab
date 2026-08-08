@@ -5,3 +5,4 @@
 3. [Survey on memory augmented neural networks](https://arxiv.org/pdf/2312.06141v2)
 4. [Hopfield networks is all you need](https://arxiv.org/pdf/2008.02217)
 5. [Hopfield Networks: Neural Memory Machines](https://towardsdatascience.com/hopfield-networks-neural-memory-machines-4c94be821073/)
+6. [Memory Caching: RNNs with Growing Memory](https://arxiv.org/pdf/2602.24281)

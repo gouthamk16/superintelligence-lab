@@ -198,3 +198,8 @@ Not useful as-is:
 - Fully materializing every past pattern in $X$ - same linear growth problem as KV cache.
 
 #### Neural Turing Machines
+
+Skipping it for now, will come back to it later. Moving on to cached memory RNNs/LSTMs etc which might prove more useful to us.
+
+#### Cached Memory RNNs [6]
+
